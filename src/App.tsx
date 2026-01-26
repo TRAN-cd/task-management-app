@@ -1,13 +1,13 @@
-import ProjectListPage from "./components/ProjectListPage";
-// import ProjectDetailPage from "./components/ProjrctDetailPage";
-// import ProjectCreatePage from "./components/ProjectCreatePage";
+import ProjectListPage from "./pages/ProjectListPage";
+import ProjectDetailPage from "./pages/ProjectDetailPage";
+import ProjectCreatePage from "./pages/ProjectCreatePage";
 
 function App() {
   return (
     <div>
-      <ProjectListPage />
+      {/* <ProjectListPage /> */}
       {/* {<ProjectDetailPage />} */}
-      {/* {<ProjectCreatePage />} */}
+      {<ProjectCreatePage />}
     </div>
   )
 }
