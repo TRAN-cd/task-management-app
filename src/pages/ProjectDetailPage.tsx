@@ -1,47 +1,78 @@
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom";
+import { useProjectById } from "../hooks/useProjectById";
+import type { Project } from "../types/project";
+import type React from "react";
 
-const projects = [
-  {
-    id: 1,
-    name: "コーポレートサイト制作",
-    assignee: "山田",
-    status: "進行中",
-  },
-  {
-    id: 2,
-    name: "LP改善プロジェクト",
-    assignee: "佐藤",
-    status: "未着手",
-  },
-];
+type Props = {
+  projects: Project[];
+  onDelete: (id: number) => void;
+  onUpdateProjectStatus: (id: number, newStatus: string) => void;
+  onUpdateProjectDescription: (id: number, newDescription: string) => void;
+};
 
-const ProjectDetailPage = () => {
-  // const params = useParams(); //今のURLに含まれる:〇〇 の値をまとめて取得する
+
+const ProjectDetailPage = ({ projects, onDelete, onUpdateProjectStatus, onUpdateProjectDescription }: Props) => {
+  //今のURLに含まれる:〇〇 の値をまとめて取得する
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const projectId = Number(id);
+  const project = useProjectById(projects, projectId);
 
   if (!id) {
     return <p>プロジェクトが見つかりません</p>;
   }
 
-  const projectId = Number(id);
-
   if (Number.isNaN(projectId)) {
     return <p>プロジェクトが見つかりません</p>;
   }
-  
-  const project = projects.find((p) => p.id === projectId);
   
   if (!project) {
     return <p>プロジェクトが見つかりません</p>;
   }
 
+  const handleDelete = () => {
+    if (window.confirm("本当に消しますか？")) {
+      onDelete(project.id);
+      navigate("/")
+    }
+  };
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onUpdateProjectStatus(project.id, e.target.value);
+  };
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onUpdateProjectDescription(project.id, e.target.value);
+  };
+
   return (
     <div>
-      <h1>コーポレートサイト制作（プロジェクト詳細）</h1>
+      <h1>{project.name}（プロジェクト詳細）</h1>
+      <p>担当者：{project.assignee}</p>
+
+      <div>
+        <label>
+          ステータス：
+          <select value={project.status} onChange={handleStatusChange}>
+            <option value="未着手">未着手</option>
+            <option value="進行中">進行中</option>
+            <option value="完了">完了</option>
+          </select>
+        </label>
+      </div>
+
+      <div style={{marginTop: "20px"}}>
+        <label style={{display: "block"}}>備考</label>
+        <textarea value={project.description} onChange={handleDescriptionChange} rows={5} style={{widows: "100%", marginTop:"8px"}}></textarea>
+      </div>
+
+      {/* 管理用ID表示 */}
       <p>URLのID: {id}</p>
 
 
-      <button>プロジェクト一覧に戻る</button>
+      <button onClick={()=> navigate("/")}>プロジェクト一覧に戻る</button>
+      <hr />
+      <button onClick={handleDelete} style={{color: "red"}}>このプロジェクトを削除する</button>
     </div>
   )
 }
