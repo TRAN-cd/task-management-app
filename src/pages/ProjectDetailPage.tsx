@@ -8,10 +8,11 @@ type Props = {
   onDelete: (id: number) => void;
   onUpdateProjectStatus: (id: number, newStatus: string) => void;
   onUpdateProjectDescription: (id: number, newDescription: string) => void;
+  onUpdateAssignee: (id: number, newAssignee: string) => void;
 };
 
 
-const ProjectDetailPage = ({ projects, onDelete, onUpdateProjectStatus, onUpdateProjectDescription }: Props) => {
+const ProjectDetailPage = ({ projects, onDelete, onUpdateProjectStatus, onUpdateProjectDescription, onUpdateAssignee }: Props) => {
   //今のURLに含まれる:〇〇 の値をまとめて取得する
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -47,8 +48,17 @@ const ProjectDetailPage = ({ projects, onDelete, onUpdateProjectStatus, onUpdate
 
   return (
     <div>
-      <h1>{project.name}（プロジェクト詳細）</h1>
-      <p>担当者：{project.assignee}</p>
+      <h1>{project.name}</h1>
+
+      <div style={{ marginBottom: "20px", padding: "15px", backgroundColor: "#f3f4f6", borderRadius: "8px" }}>
+        <label style={{ display: "block", fontWeight: "bold", marginBottom: "5px" }}>プロジェクト担当者</label>
+        <input
+          type="text"
+          value={project.assignee}
+          onChange={(e) => onUpdateAssignee(project.id, e.target.value)}
+          style={{ width: "100%", padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
+        />
+      </div>
 
       <div>
         <label>

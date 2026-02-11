@@ -6,23 +6,6 @@ import { useState, useEffect } from "react";
 import type { Project } from "./types/project";
 
 const App = () => {
-  // const [projects, setProjects] = useState<Project[]>([
-  //   {
-  //     id: 1,
-  //     name: "コーポレートサイト制作",
-  //     assignee: "山田",
-  //     status: "進行中",
-  //     description: "トップページと会社概要の刷新。",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "LP改善プロジェクト",
-  //     assignee: "佐藤",
-  //     status: "未着手",
-  //     description: "スケジュール未確認",
-  //   },
-  // ]);
-
   // 1. 初期値を LocalStorage から読み込む
   const [projects, setProjects] = useState<Project[]>(() => {
     const saved = localStorage.getItem("my-projects");
@@ -30,8 +13,8 @@ const App = () => {
       return JSON.parse(saved);
     }
     return [ //データがない場合の初期値
-      { id: 1, name: "コーポレートサイト制作", assignee: "山田", status: "進行中", description: "HPの刷新" },
-      { id: 2, name: "LP改善プロジェクト", assignee: "佐藤", status: "未着手", description: "CVR向上" },
+      { id: 1, name: "コーポレートサイト制作", assignee: "山田", status: "進行中", description: "HPの刷新", task: [] },
+      { id: 2, name: "LP改善プロジェクト", assignee: "佐藤", status: "未着手", description: "CVR向上", task: [] },
     ];
   });
 
@@ -42,17 +25,19 @@ const App = () => {
 
 
   // 新しいプロジェクトを追加する関数
-  const addProject = (newProject: { name: string; status: string; description: string }) => {
+  const addProject = (newProject: { name: string; status: string; description: string; assignee: string }) => {
     // 新しいIDを生成する（今の最大ID + 1）
     const nextId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
 
     // 新しいプロジェクトオブジェクトを作成
     const projectToAdd: Project = {
       id: nextId,
-      name: newProject.name,
-      status: newProject.status,
-      assignee: "未割り当て",
-      description: newProject.description,
+      // name: newProject.name,
+      // status: newProject.status,
+      // assignee: "未割り当て",
+      // description: newProject.description,
+      ...newProject,
+      tasks: [],
     };
 
     // Stateを更新する（元の配列を壊さず、あたらしい配列を作る）
@@ -62,6 +47,12 @@ const App = () => {
   const deleteProject = (id: number) => {
     // 指定されたID以外を抽出して、新しい配列を作る
     setProjects((prev) => prev.filter((project) => project.id !== id));
+  };
+
+  const updateProjectAssignee = (id: number, newAssignee: string) => {
+    setProjects((prev) =>
+    prev.map((p) => (p.id === id ? {...p, assignee: newAssignee} : p))
+    );
   };
 
   const updateProjectStatus = (id: number, newStatus: string) => {
@@ -90,7 +81,9 @@ const App = () => {
             projects={projects} 
             onDelete={deleteProject} 
             onUpdateProjectStatus={updateProjectStatus}
-            onUpdateProjectDescription={updateProjectDescription}/>}
+            onUpdateProjectDescription={updateProjectDescription}
+            onUpdateAssignee={updateProjectAssignee}
+          />}
         />
         <Route path="/project/new" element={<ProjectCreatePage onAdd={addProject}/>}/>
       </Routes>

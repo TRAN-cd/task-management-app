@@ -49,6 +49,10 @@ const ProjectListPage = ({ projects }: Props) => {
               >
                 {project.name}
               </Link>
+
+              <div style={{marginTop: "8px"}}>
+                <span style={{fontSize: "12px"}}>担当者 <strong style={{fontSize: "16px"}}>{project.assignee}</strong></span>
+              </div>
               
               {/* ステータス表示 */}
               <div style={{ marginTop: "8px" }}>

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 
 type Props = {
-  onAdd: (project: {name: string; status: string; description: string}) => void;
+  onAdd: (project: {name: string; status: string; description: string, assignee: string}) => void;
 };
 
 const ProjectCreatePage = ({onAdd}: Props) => {
@@ -11,6 +11,7 @@ const ProjectCreatePage = ({onAdd}: Props) => {
   const [name, setName] = useState("");
   const [status, setStatus] =useState("未着手"); //初期値を設定
   const [description, setDescription] = useState("");
+  const [assignee, setAssignee] = useState("");
 
   const navigate = useNavigate();
 
@@ -24,7 +25,7 @@ const ProjectCreatePage = ({onAdd}: Props) => {
     }
 
     // App.tsx からもらった関数を読んで、データを追加する
-    onAdd({name, status, description});
+    onAdd({name, status, description, assignee: assignee || "未割り当て"});
 
     // 追加が終わったら、一覧画面へ戻る
     navigate("/");
@@ -43,6 +44,11 @@ const ProjectCreatePage = ({onAdd}: Props) => {
               onChange={(e) => setName(e.target.value)} //入力されたらStateを更新
             />
           </label>
+        </div>
+
+        <div style={{marginTop: "16px"}}>
+          <label>担当者：</label>
+          <input type="text" value={assignee} onChange={(e) => setAssignee(e.target.value)} placeholder="山田"></input>
         </div>
 
         <div>
