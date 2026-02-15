@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { STAFF_OPTIONS } from "../types/project";
 
 
 type Props = {
@@ -11,7 +12,7 @@ const ProjectCreatePage = ({onAdd}: Props) => {
   const [name, setName] = useState("");
   const [status, setStatus] =useState("未着手"); //初期値を設定
   const [description, setDescription] = useState("");
-  const [assignee, setAssignee] = useState("");
+  const [assignee, setAssignee] = useState(STAFF_OPTIONS[0]);
 
   const navigate = useNavigate();
 
@@ -48,7 +49,11 @@ const ProjectCreatePage = ({onAdd}: Props) => {
 
         <div style={{marginTop: "16px"}}>
           <label>担当者：</label>
-          <input type="text" value={assignee} onChange={(e) => setAssignee(e.target.value)} placeholder="山田"></input>
+          <select value={assignee} onChange={(e) => setAssignee(e.target.value)} style={{ width: "100%", padding: "8px" }}>
+            {STAFF_OPTIONS.map(staff => (
+              <option key={staff} value={staff}>{staff}</option>
+            ))}
+          </select>
         </div>
 
         <div>
